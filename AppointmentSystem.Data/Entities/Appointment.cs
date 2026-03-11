@@ -4,8 +4,8 @@ public class Appointment
 {
     public int Id { get; set; }
 
-    public string AppUserId { get; set; } = string.Empty;
-    public AppUser AppUser { get; set; } = null!;
+    public string? AppUserId { get; set; }
+    public AppUser? AppUser { get; set; }
 
     public int ServiceId { get; set; }
     public Service Service { get; set; } = null!;

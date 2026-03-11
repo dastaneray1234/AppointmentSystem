@@ -92,7 +92,6 @@ namespace AppointmentSystem.Data.Migrations
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("AppUserId")
-                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<DateTime>("AppointmentDate")
@@ -299,9 +298,7 @@ namespace AppointmentSystem.Data.Migrations
                 {
                     b.HasOne("AppointmentSystem.Data.Entities.AppUser", "AppUser")
                         .WithMany()
-                        .HasForeignKey("AppUserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("AppUserId");
 
                     b.HasOne("AppointmentSystem.Data.Entities.Service", "Service")
                         .WithMany("Appointments")

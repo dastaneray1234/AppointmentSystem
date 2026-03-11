@@ -10,3 +10,4 @@ C:\Users\e.dastan\AppointmentSystem\AppointmentSystem.Data\obj\Debug\net10.0\App
 C:\Users\e.dastan\AppointmentSystem\AppointmentSystem.Data\obj\Debug\net10.0\refint\AppointmentSystem.Data.dll
 C:\Users\e.dastan\AppointmentSystem\AppointmentSystem.Data\obj\Debug\net10.0\AppointmentSystem.Data.pdb
 C:\Users\e.dastan\AppointmentSystem\AppointmentSystem.Data\obj\Debug\net10.0\ref\AppointmentSystem.Data.dll
+C:\Users\e.dastan\AppointmentSystem\AppointmentSystem.Data\obj\Debug\net10.0\AppointmentSystem.Data.sourcelink.json

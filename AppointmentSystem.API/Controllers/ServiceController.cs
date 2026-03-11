@@ -51,5 +51,36 @@ public class ServiceController : ControllerBase
         return CreatedAtAction(nameof(GetAll), new { id = service.Id }, service);
     }
 
+    [HttpPut("{id}")]
+    public async Task<IActionResult> Update(int id, CreateServiceDto dto)
+    {
+        var service = await _context.Services.FindAsync(id);
+        if (service == null)
+            return NotFound();
+
+        service.Name = dto.Name;
+        service.DurationInMinutes = dto.DurationInMinutes;
+        service.Price = dto.Price;
+        service.IsActive = dto.IsActive;
+
+        await _context.SaveChangesAsync();
+
+        return Ok(service);
+    }
+
+    [HttpDelete("{id}")]
+    public async Task<IActionResult> Delete(int id)
+    {
+        var service = await _context.Services.FindAsync(id);
+
+        if (service == null)
+            return NotFound();
+
+        _context.Services.Remove(service);
+        await _context.SaveChangesAsync();
+
+        return NoContent();
+    }
+
 
 }
