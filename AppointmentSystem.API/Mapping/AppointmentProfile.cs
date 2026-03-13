@@ -14,6 +14,17 @@ public class AppointmentProfile : Profile
             .ForMember(dest => dest.AppUser, opt => opt.Ignore())
             .ForMember(dest => dest.Service, opt => opt.Ignore());
 
+
         CreateMap<Appointment, AppointmentResponseDto>();
+
+
+        CreateMap<CreateServiceDto, Service>()
+               .ForMember(dest => dest.Id, opt => opt.Ignore())
+            .ForMember(dest => dest.Appointments, opt => opt.Ignore());
+
+        CreateMap<Service, ServiceResponseDto>();
+
+
     }
+
 }
