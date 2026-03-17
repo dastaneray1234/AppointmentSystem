@@ -3,6 +3,7 @@ using AppointmentSystem.Data.Entities;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using AppointmentSystem.API.DTOs;
+using AutoMapper;
 
 namespace AppointmentSystem.API.Controllers;
 
@@ -12,17 +13,19 @@ namespace AppointmentSystem.API.Controllers;
 public class ServiceController : ControllerBase
 {
     private readonly ApplicationDbContext _context;
-
-    public ServiceController(ApplicationDbContext context)
+ private readonly IMapper _mapper;
+    public ServiceController(ApplicationDbContext context, IMapper mapper)
     {
         _context = context;
+        _mapper = mapper;
     }
 
     [HttpGet]
     public async Task<IActionResult> GetAll()
     {
         var services = await _context.Services.ToListAsync();
-        return Ok(services);
+        var response =  _mapper.Map<List<ServiceResponseDto>>(services);
+        return Ok(response);
     }
 
     [HttpGet("{id}")]
@@ -31,24 +34,21 @@ public class ServiceController : ControllerBase
         var service = await _context.Services.FindAsync(id);
         if (service == null)
             return NotFound();
-        return Ok(service);
+
+        var response = _mapper.Map<ServiceResponseDto>(service);    
+        return Ok(response);
     }
 
     [HttpPost]
     public async Task<IActionResult> Create(CreateServiceDto dto)
     {
-        var service = new Service
-        {
-            Name = dto.Name,
-            DurationInMinutes = dto.DurationInMinutes,
-            Price = dto.Price,
-            IsActive = dto.IsActive
-        };
-
+       var service = _mapper.Map<Service>(dto);
         await _context.Services.AddAsync(service);
         await _context.SaveChangesAsync();
 
-        return CreatedAtAction(nameof(GetAll), new { id = service.Id }, service);
+        var response = _mapper.Map<ServiceResponseDto>(service);
+
+        return CreatedAtAction(nameof(GetById), new { id = service.Id }, response);
     }
 
     [HttpPut("{id}")]
@@ -58,14 +58,12 @@ public class ServiceController : ControllerBase
         if (service == null)
             return NotFound();
 
-        service.Name = dto.Name;
-        service.DurationInMinutes = dto.DurationInMinutes;
-        service.Price = dto.Price;
-        service.IsActive = dto.IsActive;
-
+     var serviceEntity = _mapper.Map(dto, service);
         await _context.SaveChangesAsync();
 
-        return Ok(service);
+        var response = _mapper.Map<ServiceResponseDto>(serviceEntity);
+
+        return Ok(response);
     }
 
     [HttpDelete("{id}")]
@@ -75,6 +73,14 @@ public class ServiceController : ControllerBase
 
         if (service == null)
             return NotFound();
+
+        var hasAppointments = await _context.Appointments.AnyAsync(a => a.ServiceId == id);
+        if (hasAppointments)
+        {
+            service.IsActive = false;
+            await _context.SaveChangesAsync();
+            return NoContent();
+        }
 
         _context.Services.Remove(service);
         await _context.SaveChangesAsync();

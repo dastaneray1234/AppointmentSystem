@@ -303,7 +303,7 @@ namespace AppointmentSystem.Data.Migrations
                     b.HasOne("AppointmentSystem.Data.Entities.Service", "Service")
                         .WithMany("Appointments")
                         .HasForeignKey("ServiceId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("AppUser");

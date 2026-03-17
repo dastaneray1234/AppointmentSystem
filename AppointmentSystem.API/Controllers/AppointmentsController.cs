@@ -46,4 +46,47 @@ public class AppointmentsController : ControllerBase
 
         return Ok(response);
     }
+
+    [HttpGet("{id}")]
+    public async Task<IActionResult> GetById(int id)
+    {
+        var appointment = await _context.Appointments.FindAsync(id);
+
+        if (appointment is null)
+            return NotFound("Appointment not found.");
+
+        var response = _mapper.Map<AppointmentResponseDto>(appointment);
+        return Ok(response);
+    }
+
+    [HttpPut("{id}")]
+
+    public async Task<IActionResult> Update(int id, CreateAppointmentDto dto)
+    {
+        var appointment = await _context.Appointments.FindAsync(id);
+
+        if (appointment is null)
+            return NotFound("Appointment not found.");
+
+        var service = await _context.Services.FindAsync(dto.ServiceId);
+
+        if (service is null)
+            return NotFound("Service not found.");
+
+        appointment.AppUserId = dto.AppUserId;
+        appointment.ServiceId = dto.ServiceId;
+        appointment.AppointmentDate = dto.AppointmentDate;
+        appointment.StartTime = dto.StartTime;
+        appointment.EndTime = dto.StartTime.Add(TimeSpan.FromMinutes(service.DurationInMinutes));
+        appointment.Status = dto.Status;
+
+        await _context.SaveChangesAsync();
+
+        var response = _mapper.Map<AppointmentResponseDto>(appointment);
+        return Ok(response);
+    }
+
+    
+
+    
 }
